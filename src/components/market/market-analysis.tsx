@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from 'react';
 import { useSimulation } from '../simulation/simulation-context';
 import { useSimulationData } from '../simulation/use-simulation-data';

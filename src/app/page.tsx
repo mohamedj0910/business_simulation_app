@@ -1,3 +1,5 @@
+"use client";
+
 import React from 'react';
 import { AuthProvider } from '../lib/auth-context';
 import { DatabaseProvider } from '../lib/database-context';

@@ -1,266 +1,288 @@
 import React from 'react';
-import { Card } from '../ui/card';
-import { StatCard } from '../ui/stat-card';
-import { Tabs } from '../ui/tabs';
-import { Table } from '../ui/table';
-import { ChartContainer } from '../ui/chart-container';
-import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
+import { useSimulation } from '../simulation/simulation-context';
+import { useDecisionSubmission } from '../simulation/use-decision-submission';
+import { useSimulationData } from '../simulation/use-simulation-data';
 
 export function Dashboard() {
-  // Mock data for the dashboard
-  const financialMetrics = [
-    { title: 'Cash Balance', value: 1245000, change: 5.2, format: 'currency' },
-    { title: 'Revenue', value: 876500, change: 12.4, format: 'currency' },
-    { title: 'Profit', value: 356500, change: 22.9, format: 'currency' },
-    { title: 'Market Share', value: 18.3, change: 2.1, format: 'percent' }
-  ];
-
-  const productData = [
-    { 
-      id: 'product_1', 
-      name: 'Premium Widget', 
-      category: 'premium', 
-      sales: 1245, 
-      revenue: 373500, 
-      profit: 186750, 
-      marketShare: 24.5,
-      status: 'active'
-    },
-    { 
-      id: 'product_2', 
-      name: 'Standard Widget', 
-      category: 'mid-range', 
-      sales: 2830, 
-      revenue: 424500, 
-      profit: 169800, 
-      marketShare: 15.2,
-      status: 'active'
-    },
-    { 
-      id: 'product_3', 
-      name: 'Basic Widget', 
-      category: 'budget', 
-      sales: 1560, 
-      revenue: 78000, 
-      profit: 23400, 
-      marketShare: 8.7,
-      status: 'low_stock'
-    }
-  ];
-
-  const competitorData = [
-    { name: 'Alpha Corp', marketShare: 24.5, growth: 3.2 },
-    { name: 'Beta Inc', marketShare: 19.8, growth: 4.5 },
-    { name: 'Your Company', marketShare: 18.3, growth: 2.1 },
-    { name: 'Gamma Ltd', marketShare: 15.2, growth: -0.8 },
-    { name: 'Delta Group', marketShare: 12.7, growth: 1.2 },
-    { name: 'Others', marketShare: 9.5, growth: -1.5 }
-  ];
-
-  const marketTrends = [
-    { 
-      name: 'Premium Segment Growth', 
-      description: 'The premium segment is growing at 5.2%, faster than other segments.',
-      impact: 'high',
-      type: 'opportunity'
-    },
-    { 
-      name: 'Sustainability Focus', 
-      description: 'Consumers are increasingly valuing sustainable products and practices.',
-      impact: 'medium',
-      type: 'opportunity'
-    },
-    { 
-      name: 'Digital Transformation', 
-      description: 'Companies investing in digital technologies are seeing higher growth rates.',
-      impact: 'high',
-      type: 'opportunity'
-    },
-    { 
-      name: 'Supply Chain Disruptions', 
-      description: 'Ongoing global supply chain challenges are affecting production costs and delivery times.',
-      impact: 'medium',
-      type: 'threat'
-    }
-  ];
-
-  const productColumns = [
-    { key: 'name', header: 'Product' },
-    { 
-      key: 'category', 
-      header: 'Category',
-      render: (value) => {
-        const variants = {
-          'premium': 'primary',
-          'mid-range': 'success',
-          'budget': 'warning'
-        };
-        return <Badge variant={variants[value] || 'default'}>{value}</Badge>;
-      }
-    },
-    { 
-      key: 'sales', 
-      header: 'Sales',
-      render: (value) => new Intl.NumberFormat('en-US').format(value)
-    },
-    { 
-      key: 'revenue', 
-      header: 'Revenue',
-      render: (value) => new Intl.NumberFormat('en-US', { 
-        style: 'currency', 
-        currency: 'USD',
-        maximumFractionDigits: 0
-      }).format(value)
-    },
-    { 
-      key: 'profit', 
-      header: 'Profit',
-      render: (value) => new Intl.NumberFormat('en-US', { 
-        style: 'currency', 
-        currency: 'USD',
-        maximumFractionDigits: 0
-      }).format(value)
-    },
-    { 
-      key: 'marketShare', 
-      header: 'Market Share',
-      render: (value) => `${value}%`
-    },
-    { 
-      key: 'status', 
-      header: 'Status',
-      render: (value) => {
-        const variants = {
-          'active': 'success',
-          'low_stock': 'warning',
-          'discontinued': 'danger'
-        };
-        return <Badge variant={variants[value] || 'default'}>{value.replace('_', ' ')}</Badge>;
-      }
-    }
-  ];
-
-  const competitorColumns = [
-    { key: 'name', header: 'Competitor' },
-    { 
-      key: 'marketShare', 
-      header: 'Market Share',
-      render: (value) => `${value}%`
-    },
-    { 
-      key: 'growth', 
-      header: 'Growth',
-      render: (value) => {
-        const color = value > 0 ? 'text-green-600' : value < 0 ? 'text-red-600' : 'text-gray-500';
-        const prefix = value > 0 ? '+' : '';
-        return <span className={color}>{prefix}{value}%</span>;
-      }
-    }
-  ];
-
-  return (
-    <div className="space-y-6">
-      {/* Financial Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {financialMetrics.map((metric, index) => (
-          <StatCard
-            key={index}
-            title={metric.title}
-            value={metric.value}
-            change={metric.change}
-            format={metric.format}
-          />
-        ))}
+  const { state, userCompany, companyProducts, advancePeriod, loading, error } = useSimulation();
+  const { getCompanyPerformance, getMarketConditions, getMarketEvents, getCurrentPeriod } = useSimulationData();
+  const { submitProductDevelopment, submitProduction, submitMarketing, submitPricing } = useDecisionSubmission();
+  
+  // Get current period and performance data
+  const currentPeriod = getCurrentPeriod();
+  const performance = getCompanyPerformance();
+  const marketConditions = getMarketConditions();
+  const events = getMarketEvents(currentPeriod);
+  
+  // Handle advance period
+  const handleAdvancePeriod = () => {
+    advancePeriod();
+  };
+  
+  // Handle production decision
+  const handleProductionDecision = (productId: string, volume: number) => {
+    submitProduction({
+      productId,
+      productionVolume: volume
+    });
+  };
+  
+  // Handle pricing decision
+  const handlePricingDecision = (productId: string, price: number) => {
+    submitPricing({
+      productId,
+      price
+    });
+  };
+  
+  // Handle marketing decision
+  const handleMarketingDecision = (productId: string, budget: number) => {
+    submitMarketing({
+      productId,
+      budget
+    });
+  };
+  
+  // Handle new product development
+  const handleNewProduct = (data: any) => {
+    submitProductDevelopment({
+      action: 'new_product',
+      ...data
+    });
+  };
+  
+  if (loading) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-semibold">Loading simulation...</h2>
       </div>
-
-      {/* Financial Performance Chart */}
-      <Card title="Financial Performance">
-        <ChartContainer>
-          <div className="flex items-center justify-center h-full bg-gray-100 rounded-md">
-            <p className="text-gray-500">Financial Performance Chart</p>
-          </div>
-        </ChartContainer>
-      </Card>
-
-      {/* Product Performance */}
-      <Card 
-        title="Product Performance" 
-        actions={
-          <Button 
-            variant="secondary" 
-            size="sm"
-            onClick={() => console.log('View all products')}
-          >
-            View All
-          </Button>
-        }
-      >
-        <Table
-          columns={productColumns}
-          data={productData}
-          onRowClick={(row) => console.log('Product clicked:', row)}
-        />
-      </Card>
-
-      {/* Market Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Competitor Analysis */}
-        <Card 
-          title="Competitor Analysis" 
-          className="lg:col-span-2"
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-semibold text-red-600">Error</h2>
+        <p>{error}</p>
+      </div>
+    );
+  }
+  
+  if (!userCompany) {
+    return (
+      <div className="p-6">
+        <h2 className="text-xl font-semibold">No company found</h2>
+        <p>Please create a company to start the simulation.</p>
+      </div>
+    );
+  }
+  
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">{userCompany.name}</h1>
+          <p className="text-gray-600">Period {currentPeriod}</p>
+        </div>
+        <button
+          onClick={handleAdvancePeriod}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          <Table
-            columns={competitorColumns}
-            data={competitorData}
-          />
-        </Card>
-
-        {/* Market Trends */}
-        <Card title="Market Trends">
-          <div className="space-y-4">
-            {marketTrends.map((trend, index) => (
-              <div 
-                key={index} 
-                className="p-4 bg-gray-50 rounded-md"
-              >
-                <h3 className="font-medium text-gray-900 flex items-center">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="h-5 w-5 mr-2 text-indigo-500" 
-                    viewBox="0 0 20 20" 
-                    fill="currentColor"
-                  >
-                    <path 
-                      fillRule="evenodd" 
-                      d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" 
-                      clipRule="evenodd" 
-                    />
-                  </svg>
-                  {trend.name}
-                </h3>
-                <p className="mt-1 text-sm text-gray-600">
-                  {trend.description}
-                </p>
-                <div className="mt-2 flex items-center">
-                  <Badge 
-                    variant={trend.impact === 'high' ? 'danger' : trend.impact === 'medium' ? 'warning' : 'success'}
-                    size="sm"
-                  >
-                    {trend.impact} impact
-                  </Badge>
-                  <span className="mx-2 text-gray-300">•</span>
-                  <Badge 
-                    variant={trend.type === 'opportunity' ? 'success' : 'danger'}
-                    size="sm"
-                  >
-                    {trend.type}
-                  </Badge>
-                </div>
-              </div>
-            ))}
+          Advance to Next Period
+        </button>
+      </div>
+      
+      {/* Financial Overview */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">Financial Overview</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-gray-50 p-4 rounded-md">
+            <p className="text-gray-600">Cash Balance</p>
+            <p className="text-2xl font-bold">${userCompany.cashBalance.toLocaleString()}</p>
           </div>
-        </Card>
+          <div className="bg-gray-50 p-4 rounded-md">
+            <p className="text-gray-600">Total Assets</p>
+            <p className="text-2xl font-bold">${userCompany.totalAssets.toLocaleString()}</p>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-md">
+            <p className="text-gray-600">Total Liabilities</p>
+            <p className="text-2xl font-bold">${userCompany.totalLiabilities.toLocaleString()}</p>
+          </div>
+        </div>
+        
+        {performance && (
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-gray-50 p-4 rounded-md">
+              <p className="text-gray-600">Revenue</p>
+              <p className="text-2xl font-bold">${performance.revenue.toLocaleString()}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-md">
+              <p className="text-gray-600">Costs</p>
+              <p className="text-2xl font-bold">${performance.costs.toLocaleString()}</p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-md">
+              <p className="text-gray-600">Profit</p>
+              <p className={`text-2xl font-bold ${performance.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                ${performance.profit.toLocaleString()}
+              </p>
+            </div>
+            <div className="bg-gray-50 p-4 rounded-md">
+              <p className="text-gray-600">Market Share</p>
+              <p className="text-2xl font-bold">{(performance.marketShare * 100).toFixed(1)}%</p>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      {/* Products */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">Products</h2>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white">
+            <thead>
+              <tr>
+                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Name
+                </th>
+                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Quality
+                </th>
+                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Price
+                </th>
+                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Inventory
+                </th>
+                <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {companyProducts.map((product) => (
+                <tr key={product.id}>
+                  <td className="py-2 px-4 border-b border-gray-200">
+                    {product.name}
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200">
+                    {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200">
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      product.status === 'active' ? 'bg-green-100 text-green-800' : 
+                      product.status === 'development' ? 'bg-yellow-100 text-yellow-800' : 
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+                    </span>
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200">
+                    {product.qualityRating.toFixed(1)}
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200">
+                    ${product.sellingPrice}
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200">
+                    {product.inventoryLevel}
+                  </td>
+                  <td className="py-2 px-4 border-b border-gray-200">
+                    <button
+                      onClick={() => handleProductionDecision(product.id, 1000)}
+                      className="text-blue-600 hover:text-blue-900 mr-2"
+                    >
+                      Produce
+                    </button>
+                    <button
+                      onClick={() => handlePricingDecision(product.id, product.sellingPrice + 10)}
+                      className="text-green-600 hover:text-green-900 mr-2"
+                    >
+                      Adjust Price
+                    </button>
+                    <button
+                      onClick={() => handleMarketingDecision(product.id, 10000)}
+                      className="text-purple-600 hover:text-purple-900"
+                    >
+                      Marketing
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        
+        <div className="mt-4">
+          <button
+            onClick={() => handleNewProduct({
+              name: 'New Product',
+              description: 'A new product',
+              category: 'mid-range',
+              qualityRating: 6,
+              innovationRating: 5,
+              sustainabilityRating: 5,
+              productionCost: 100,
+              sellingPrice: 200,
+              productionCapacity: 2000,
+              developmentCost: 100000,
+              developmentTime: 1
+            })}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Develop New Product
+          </button>
+        </div>
+      </div>
+      
+      {/* Market Information */}
+      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">Market Information</h2>
+        
+        {marketConditions && (
+          <div className="mb-6">
+            <h3 className="text-lg font-medium mb-2">Market Conditions</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-gray-50 p-4 rounded-md">
+                <p className="text-gray-600">Total Market Size</p>
+                <p className="text-xl font-bold">${marketConditions.totalMarketSize.toLocaleString()}</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-md">
+                <p className="text-gray-600">Sustainability Importance</p>
+                <p className="text-xl font-bold">{(marketConditions.sustainabilityImportance * 100).toFixed(1)}%</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-md">
+                <p className="text-gray-600">Segments</p>
+                <p className="text-xl font-bold">{Object.keys(JSON.parse(marketConditions.segmentDistribution)).length}</p>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {events.length > 0 && (
+          <div>
+            <h3 className="text-lg font-medium mb-2">Market Events</h3>
+            <div className="space-y-4">
+              {events.map((event) => (
+                <div key={event.id} className="bg-yellow-50 p-4 rounded-md">
+                  <h4 className="font-semibold">{event.name}</h4>
+                  <p className="text-gray-700">{event.description}</p>
+                  <div className="mt-2 flex items-center">
+                    <span className="text-sm text-gray-600">Impact: {event.impactArea}</span>
+                    <span className="mx-2">•</span>
+                    <span className="text-sm text-gray-600">
+                      Strength: {event.impactStrength > 0 ? '+' : ''}{(event.impactStrength * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

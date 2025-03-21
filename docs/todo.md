@@ -1,9 +1,6 @@
 # Create a Comprehensive Business Simulation Web Application
 
-## Research
-- [ ] Research PracticeEdu business simulations
-- [ ] Research Simformer virtual business environment
-- [ ] Research Forio corporate training simulations
+## Research 
 - [ ] Identify common features and best practices
 - [ ] Determine which features to implement
 

@@ -25,7 +25,7 @@ function AppContent() {
     );
   }
   
-  // Show auth page if not logged in
+  // Show auth page if not logged  in
   if (!user) {
     return <AuthPage />;
   }

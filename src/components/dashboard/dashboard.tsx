@@ -81,7 +81,7 @@ export function Dashboard() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-2xl font-bold">{userCompany.name}</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{userCompany.name}</h1>
           <p className="text-gray-600">Period {currentPeriod}</p>
         </div>
         <button
@@ -94,19 +94,19 @@ export function Dashboard() {
       
       {/* Financial Overview */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Financial Overview</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">Financial Overview</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-gray-50 p-4 rounded-md">
             <p className="text-gray-600">Cash Balance</p>
-            <p className="text-2xl font-bold">${userCompany.cashBalance.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-gray-700">${userCompany.cashBalance.toLocaleString()}</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-md">
             <p className="text-gray-600">Total Assets</p>
-            <p className="text-2xl font-bold">${userCompany.totalAssets.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-gray-700">${userCompany.totalAssets.toLocaleString()}</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-md">
             <p className="text-gray-600">Total Liabilities</p>
-            <p className="text-2xl font-bold">${userCompany.totalLiabilities.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-gray-700">${userCompany.totalLiabilities.toLocaleString()}</p>
           </div>
         </div>
         
@@ -118,7 +118,7 @@ export function Dashboard() {
             </div>
             <div className="bg-gray-50 p-4 rounded-md">
               <p className="text-gray-600">Costs</p>
-              <p className="text-2xl font-bold">${performance.costs.toLocaleString()}</p>
+              <p className="text-2xl font-bold ">${performance.costs.toLocaleString()}</p>
             </div>
             <div className="bg-gray-50 p-4 rounded-md">
               <p className="text-gray-600">Profit</p>
@@ -136,7 +136,7 @@ export function Dashboard() {
       
       {/* Products */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Products</h2>
+        <h2 className="text-black text-xl font-semibold mb-4">Products</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white">
             <thead>
@@ -167,13 +167,13 @@ export function Dashboard() {
             <tbody>
               {companyProducts.map((product) => (
                 <tr key={product.id}>
-                  <td className="py-2 px-4 border-b border-gray-200">
+                  <td className="py-2 px-4 border-b border-gray-200 text-gray-900">
                     {product.name}
                   </td>
-                  <td className="py-2 px-4 border-b border-gray-200">
+                  <td className="py-2 px-4 border-b border-gray-200 text-gray-900">
                     {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
                   </td>
-                  <td className="py-2 px-4 border-b border-gray-200">
+                  <td className="py-2 px-4 border-b border-gray-200 text-gray-900">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       product.status === 'active' ? 'bg-green-100 text-green-800' : 
                       product.status === 'development' ? 'bg-yellow-100 text-yellow-800' : 
@@ -182,16 +182,16 @@ export function Dashboard() {
                       {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
                     </span>
                   </td>
-                  <td className="py-2 px-4 border-b border-gray-200">
+                  <td className="py-2 px-4 border-b border-gray-200 text-gray-900">
                     {product.qualityRating.toFixed(1)}
                   </td>
-                  <td className="py-2 px-4 border-b border-gray-200">
+                  <td className="py-2 px-4 border-b border-gray-200 text-gray-900">
                     ${product.sellingPrice}
                   </td>
-                  <td className="py-2 px-4 border-b border-gray-200">
+                  <td className="py-2 px-4 border-b border-gray-200 text-gray-900">
                     {product.inventoryLevel}
                   </td>
-                  <td className="py-2 px-4 border-b border-gray-200">
+                  <td className="py-2 px-4 border-b border-gray-200 text-gray-900">
                     <button
                       onClick={() => handleProductionDecision(product.id, 1000)}
                       className="text-blue-600 hover:text-blue-900 mr-2"
@@ -241,23 +241,23 @@ export function Dashboard() {
       
       {/* Market Information */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">Market Information</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-900">Market Information</h2>
         
         {marketConditions && (
           <div className="mb-6">
-            <h3 className="text-lg font-medium mb-2">Market Conditions</h3>
+            <h3 className="text-lg font-medium mb-2 text-gray-600">Market Conditions</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-gray-50 p-4 rounded-md">
                 <p className="text-gray-600">Total Market Size</p>
-                <p className="text-xl font-bold">${marketConditions.totalMarketSize.toLocaleString()}</p>
+                <p className="text-xl font-bold text-gray-600">${marketConditions.totalMarketSize.toLocaleString()}</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-md">
                 <p className="text-gray-600">Sustainability Importance</p>
-                <p className="text-xl font-bold">{(marketConditions.sustainabilityImportance * 100).toFixed(1)}%</p>
+                <p className="text-xl font-bold text-gray-600">{(marketConditions.sustainabilityImportance * 100).toFixed(1)}%</p>
               </div>
               <div className="bg-gray-50 p-4 rounded-md">
                 <p className="text-gray-600">Segments</p>
-                <p className="text-xl font-bold">{Object.keys(JSON.parse(marketConditions.segmentDistribution)).length}</p>
+                <p className="text-xl font-bold text-gray-600">{Object.keys(JSON.parse(marketConditions.segmentDistribution)).length}</p>
               </div>
             </div>
           </div>

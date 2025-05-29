@@ -232,7 +232,7 @@ export function useSimulationPersistence() {
       for (const event of state.events) {
         // Check if event exists by getting all events for the period
         const existingEvents = await db.getEvents(state.id, event.period);
-        const eventExists = existingEvents.some(e => e.id === event.id);
+        const eventExists = existingEvents.some((e: { id: string; }) => e.id === event.id);
         
         if (!eventExists) {
           // Create event

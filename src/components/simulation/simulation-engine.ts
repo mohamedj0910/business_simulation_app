@@ -127,6 +127,7 @@ export class SimulationEngine {
         }),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        discontinuePeriod: null
       };
 
       this.state.products.push(newProduct);

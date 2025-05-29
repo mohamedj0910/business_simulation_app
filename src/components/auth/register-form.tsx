@@ -40,7 +40,7 @@ export function RegisterForm({ onSuccess, onLoginClick }: RegisterFormProps) {
 
   return (
     <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">Create an Account</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Create an Account</h2>
       
       {(formError || error) && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">

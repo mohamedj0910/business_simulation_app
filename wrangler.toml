@@ -1,7 +1,7 @@
 #:schema node_modules/wrangler/config-schema.json
-name = "businesssimulation"
+name = "bsa"
 main = ".open-next/worker.js"
-compatibility_date = "2024-09-23"
+compatibility_date = "2025-03-10"
 compatibility_flags = ["nodejs_compat"]
 
 [assets]
@@ -10,5 +10,5 @@ binding = "ASSETS"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "random_id"
-database_id = "10183848-4cc7-4198-b8c7-1374015ab09c"
+database_name = "businesssimulation-db"
+database_id = "9d1b070f-fb7d-4cb2-ba26-f82629e99b59"
